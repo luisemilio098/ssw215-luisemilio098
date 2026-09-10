@@ -7,5 +7,4 @@ I would like to build a website this semester.
 
 ## Labs
 
-- Lab 2 - edited this line on my laptop
-
+- Lab 2 - connected this repository to my laptop
