@@ -7,4 +7,5 @@ I would like to build a website this semester.
 
 ## Labs
 
-- Lab 2 - edited this line in the browser
+- Lab 2 - edited this line on my laptop
+
