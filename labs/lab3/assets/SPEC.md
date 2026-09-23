@@ -6,7 +6,7 @@ engineering student.
 ## 2. Invariants & Negative Constraints
 - All styling MUST reside in `./style.css` (no inline style="..." attributes).
 - The page MUST NOT load external CSS frameworks or CDNs (no Bootstrap, no Tailwind).
-- The avatar image MUST use the relative path `./lab3/assets/avatar.png`.
+- The avatar image MUST use the relative path `./assets/avatar.png`.
 - The layout MUST collapse into a single vertical column on screens narrower than 768px.
 ## 3. UI Content & Interface Contract
 - Hero header: my full name "<Luis Emilio Amezquita Zapata>", the subtitle "<I am a triplet>", and
@@ -15,7 +15,7 @@ this bio: "<Student athlete at Stevens Institute of Technology. Aspirations of w
 - Projects section with id="projects": lists these items: <I want to make a website for people to use to help with their day to day lives>.
 - Social link: GitHub (<https://github.com/luisemilio098>) MUST open in a new tab
 (target="_blank").
-- The "See my projects" button MUST have rounded corners and a blue background.
+- The "See my projects" button MUST have rounded corners and a yellow background.
 ## 4. Acceptance Checklist
 - [x] Valid semantic HTML5: the page uses <header>, <main>, and <footer>.
 - [x] The avatar image has width, height, and alt attributes.
