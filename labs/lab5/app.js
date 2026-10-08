@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const cardText = card.textContent.toLowerCase();
       const isVisible = filterText === '' || cardText.includes(filterText);
 
-      card.classList.toggle('hidden', !isVisible);
+      card.classList.toggle('is-hidden', !isVisible);
 
       if (isVisible) {
         visibleCount += 1;

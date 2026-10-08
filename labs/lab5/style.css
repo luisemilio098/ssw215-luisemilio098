@@ -10,7 +10,7 @@ body {
   color: #e5e7eb;
   background: #111827;
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: is-hidden;
 }
 
 img {
@@ -217,7 +217,7 @@ h1 {
   color: #374151;
 }
 
-.hidden {
+.is-hidden {
   display: none;
 }
 
