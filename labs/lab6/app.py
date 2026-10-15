@@ -23,6 +23,12 @@ projects_db = [
         "description": "Develop a robot that can help people complete simple home tasks.",
         "likes": 0,
     },
+    {
+        "id": 4,
+        "title": "Website For People With Mental Health Issues",
+        "description": "I want to make a website for people with mental health issues to help with their day to day lives.",
+        "likes": 0,
+    }
 ]
 
 
