@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const updateProjectList = () => {
-    const filterText = filterInput.value.trim().toLowerCase();
+    const filterText = filterInput.value.trim().toLowerCase(); // Hand edited by LEA
     let visibleCount = 0;
     const visibleTitles = [];
 
     projectCards.forEach((card) => {
-      const cardText = card.textContent.toLowerCase();
+      const cardText = card.textContent.toLowerCase(); // Hand edited by LEA
       const isVisible = filterText === '' || cardText.includes(filterText);
 
       card.classList.toggle('hidden', !isVisible);
