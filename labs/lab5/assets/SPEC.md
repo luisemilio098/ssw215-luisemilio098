@@ -48,12 +48,12 @@ reload.
 visible to the console with console.log.
 
 ## 4. Acceptance Checklist
-- [ ] app.js is loaded from <head> with defer, and index.html has no inline onclick and
+- [X] app.js is loaded from <head> with defer, and index.html has no inline onclick and
 no code inside a <script> tag.
-- [ ] Typing in the filter box hides and shows cards live, without pressing anything.
-- [ ] The "Showing X of Y projects" line updates as I type.
-- [ ] Emptying the box brings every card back.
-- [ ] app.js contains no .style assignments — hiding is done with the "hidden" class.
-- [ ] The DevTools Console shows no red errors when the page loads.
-- [ ] Typing in the filter prints the matching project titles in the Console, and the
+- [X] Typing in the filter box hides and shows cards live, without pressing anything.
+- [X] The "Showing X of Y projects" line updates as I type.
+- [X] Emptying the box brings every card back.
+- [X] app.js contains no .style assignments — hiding is done with the "hidden" class.
+- [X] The DevTools Console shows no red errors when the page loads.
+- [X] Typing in the filter prints the matching project titles in the Console, and the
 list gets shorter as I type.
