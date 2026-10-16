@@ -60,9 +60,22 @@
 
           <div class="projects-grid">
             {% for project in projects %}
+            <!-- hand edited by LEA-->
+             {% if project.likes > 10 %}
+             <span class="badge">Trending</span>
+             {% endif %}
             <article class="card" data-project-id="{{ project.id }}">
-              <h3 class="project-card-title">{{ project.title }}</h3>
+              <div class="project-card-heading">
+                <h3 class="project-card-title">{{ project.title }}</h3>
+                {% if project.likes > 10 %}
+                <span class="trending-badge">Trending</span>
+                {% endif %}
+              </div>
               <p class="project-card-description">{{ project.description }}</p>
+              <div class="project-card-actions">
+                <button class="upvote-btn" type="button">Upvote</button>
+                <span class="like-count">{{ project.likes }}</span>
+              </div>
             </article>
             {% endfor %}
           </div>

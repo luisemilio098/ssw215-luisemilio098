@@ -34,4 +34,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   filterInput.addEventListener('input', updateProjectList);
   updateProjectList();
+
+  projectCards.forEach((card) => {
+    const upvoteButton = card.querySelector('.upvote-btn');
+    const likeCount = card.querySelector('.like-count');
+
+    if (!upvoteButton || !likeCount) {
+      return;
+    }
+
+    upvoteButton.addEventListener('click', async () => {
+      upvoteButton.disabled = true;
+
+      try {
+        const response = await fetch(
+          `/api/projects/${card.dataset.projectId}/upvote`,
+          { method: 'POST' },
+        );
+
+        if (!response.ok) {
+          throw new Error(`Upvote failed with status ${response.status}`);
+        }
+
+        const project = await response.json();
+        if (!Number.isInteger(project.likes)) {
+          throw new Error('Upvote response did not include a valid like count');
+        }
+
+        likeCount.textContent = project.likes;
+
+        if (project.likes > 10 && !card.querySelector('.trending-badge')) {
+          const badge = document.createElement('span');
+          badge.className = 'trending-badge';
+          badge.textContent = 'Trending';
+          card.querySelector('.project-card-heading').append(badge);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        upvoteButton.disabled = false;
+      }
+    });
+  });
 });
