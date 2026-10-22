@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "title": "Website for People to Have Fun On",
+    "title": "Website for People to Use",
     "description": "I want to make a website for people to use to help with their day to day lives.",
     "likes": 4
   },
@@ -21,6 +21,12 @@
     "id": 4,
     "title": "Website For People With Mental Health Issues",
     "description": "I want to make a website for people with mental health issues to help with their day to day lives.",
+    "likes": 0
+  },
+  {
+    "id": 5,
+    "title": "Baseball Simulator",
+    "description": "",
     "likes": 0
   }
 ]

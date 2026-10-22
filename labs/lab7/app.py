@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template, send_from_directory
+from flask import Flask, jsonify, render_template, request, send_from_directory
 
 app = Flask(__name__)
 
@@ -40,6 +40,28 @@ def upvote_project(project_id):
     project["likes"] += 1
     save_projects(projects_db)
     return jsonify({"project_id": project_id, "likes": project["likes"]})
+
+
+@app.post("/api/projects")
+def create_project():
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"error": "A project title is required"}), 400
+
+    title = data.get("title")
+    if not isinstance(title, str) or not title.strip():
+        return jsonify({"error": "A project title is required"}), 400
+
+    projects_db[:] = load_projects()
+    project = {
+        "id": max((item["id"] for item in projects_db), default=0) + 1,
+        "title": title.strip(),
+        "description": "",
+        "likes": 0,
+    }
+    projects_db.append(project)
+    save_projects(projects_db)
+    return jsonify(project), 201
 
 
 @app.route("/assets/<path:filename>")

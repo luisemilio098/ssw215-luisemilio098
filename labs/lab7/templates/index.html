@@ -58,12 +58,14 @@
             Showing {{ projects|length }} of {{ projects|length }} projects
           </p>
 
+          <form class="new-project-form" id="new-project-form">
+            <label class="filter-label" for="new-title">New project title</label>
+            <input class="filter-input" id="new-title" name="title" type="text" />
+            <button class="upvote-btn" type="submit">Add project</button>
+          </form>
+
           <div class="projects-grid">
             {% for project in projects %}
-            <!-- hand edited by LEA-->
-             {% if project.likes > 10 %}
-             <span class="badge">Trending</span>
-             {% endif %}
             <article class="card" data-project-id="{{ project.id }}">
               <div class="project-card-heading">
                 <h3 class="project-card-title">{{ project.title }}</h3>
