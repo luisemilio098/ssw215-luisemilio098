@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "title": "Website for People to Use",
+        "description": "I want to make a website for people to use to help with their day to day lives.",
+        "likes": 0
+    },
+    {
+        "id": 2,
+        "title": "Student Athlete Planner",
+        "description": "Plan classes, workouts, and recovery time more efficiently.",
+        "likes": 0
+    },
+    {
+        "id": 3,
+        "title": "Robotics Prototype",
+        "description": "Develop a robot that can help people complete simple home tasks.",
+        "likes": 0
+    },
+    {
+        "id": 4,
+        "title": "Website For People With Mental Health Issues",
+        "description": "I want to make a website for people with mental health issues to help with their day to day lives.",
+        "likes": 0
+    }
+]
