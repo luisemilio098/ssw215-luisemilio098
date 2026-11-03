@@ -16,10 +16,13 @@ db = SQLAlchemy(app)
 
 
 class Project(db.Model):
+    __tablename__ = "projects"
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False, unique=True)
     description = db.Column(db.Text, nullable=False, default="")
     likes = db.Column(db.Integer, default=0)
+    author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=False)
 
     def to_dict(self):
         return {
@@ -27,7 +30,16 @@ class Project(db.Model):
             "title": self.title,
             "description": self.description,
             "likes": self.likes,
+            "author_name": self.author.name,
         }
+
+
+class Author(db.Model):
+    __tablename__ = "authors"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    projects = db.relationship("Project", backref="author")
 
 
 def init_seed_data():
@@ -38,12 +50,14 @@ def init_seed_data():
     with seed_file.open(encoding="utf-8") as projects_file:
         seed_projects = json.load(projects_file)
 
+    author = Author(name="Luis Emilio Amezquita Zapata")
     db.session.add_all(
         Project(
             id=project["id"],
             title=project["title"],
             description=project.get("description", ""),
             likes=project.get("likes", 0),
+            author=author,
         )
         for project in seed_projects
     )
@@ -100,7 +114,13 @@ def create_project():
     if not isinstance(title, str) or not title.strip():
         return jsonify({"error": "A project title is required"}), 400
 
-    project = Project(title=title.strip(), description="", likes=0)
+    author = Author.query.first()
+    project = Project(
+        title=title.strip(),
+        description="",
+        likes=0,
+        author=author,
+    )
     db.session.add(project)
     try:
         db.session.commit()
