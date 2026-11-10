@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
     description.className = 'project-card-description';
     description.textContent = project.description;
 
+    const author = document.createElement('p');
+    author.className = 'project-author';
+    author.textContent = `Made by ${project.author_name}`;
+
     const actions = document.createElement('div');
     actions.className = 'project-card-actions';
     const upvoteButton = document.createElement('button');
@@ -72,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     likeCount.textContent = project.likes;
     actions.append(upvoteButton, likeCount);
 
-    card.append(heading, description, actions);
+    card.append(heading, description, author, actions);
     addTrendingBadge(card, project.likes);
     return card;
   };
