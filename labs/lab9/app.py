@@ -3,7 +3,10 @@ from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
+
+from ai_service import ModelRefusalError, ProviderUnavailableError, extract_project
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = (
@@ -21,6 +24,8 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False, unique=True)
     description = db.Column(db.Text, nullable=False, default="")
+    summary = db.Column(db.Text, nullable=False, default="")
+    technologies = db.Column(db.Text, nullable=False, default="")
     likes = db.Column(db.Integer, default=0)
     author_id = db.Column(db.Integer, db.ForeignKey("authors.id"), nullable=False)
 
@@ -29,6 +34,8 @@ class Project(db.Model):
             "id": self.id,
             "title": self.title,
             "description": self.description,
+            "summary": self.summary,
+            "technologies": self.technologies,
             "likes": self.likes,
             "author_name": self.author.name,
         }
@@ -70,6 +77,18 @@ def init_seed_data():
 
 with app.app_context():
     db.create_all()
+    project_columns = {
+        column["name"] for column in inspect(db.engine).get_columns("projects")
+    }
+    with db.engine.begin() as connection:
+        if "summary" not in project_columns:
+            connection.exec_driver_sql(
+                "ALTER TABLE projects ADD COLUMN summary TEXT NOT NULL DEFAULT ''"
+            )
+        if "technologies" not in project_columns:
+            connection.exec_driver_sql(
+                "ALTER TABLE projects ADD COLUMN technologies TEXT NOT NULL DEFAULT ''"
+            )
     init_seed_data()
 
 
@@ -127,6 +146,39 @@ def create_project():
     except SQLAlchemyError:
         db.session.rollback()
         return jsonify({"error": "A project with that title already exists"}), 400
+
+    return jsonify(project.to_dict()), 201
+
+
+@app.post("/api/projects/smart")
+def smart_create_project():
+    data = request.get_json(silent=True)
+    notes = data.get("notes") if isinstance(data, dict) else None
+    if not isinstance(notes, str) or len(notes.strip()) < 20:
+        return jsonify({"error": "Notes must be at least 20 characters"}), 400
+
+    try:
+        details = extract_project(notes.strip())
+    except ModelRefusalError:
+        return jsonify({"error": "The model refused to create a project"}), 422
+    except ProviderUnavailableError:
+        return jsonify({"error": "The AI provider is unavailable"}), 503
+
+    summary = details.summary
+    project = Project(
+        title=details.title,
+        description=summary,
+        summary=summary,
+        technologies=", ".join(details.technologies),
+        likes=0,
+        author=Author.query.first(),
+    )
+    db.session.add(project)
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return jsonify({"error": "Unable to save the generated project"}), 400
 
     return jsonify(project.to_dict()), 201
 

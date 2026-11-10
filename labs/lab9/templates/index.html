@@ -58,6 +58,18 @@
             Showing {{ projects|length }} of {{ projects|length }} projects
           </p>
 
+          <form class="new-project-form" id="smart-create-form">
+            <label class="filter-label" for="smart-notes">Project notes</label>
+            <textarea
+              class="filter-input"
+              id="smart-notes"
+              name="notes"
+              rows="5"
+            ></textarea>
+            <button class="upvote-btn" type="submit">Smart create</button>
+            <p id="smart-create-status" aria-live="polite"></p>
+          </form>
+
           <form class="new-project-form" id="new-project-form">
             <label class="filter-label" for="new-title">New project title</label>
             <input class="filter-input" id="new-title" name="title" type="text" />
@@ -74,6 +86,9 @@
                 {% endif %}
               </div>
               <p class="project-card-description">{{ project.description }}</p>
+              {% if project.technologies %}
+              <p class="project-technologies">Technologies: {{ project.technologies }}</p>
+              {% endif %}
               <p class="project-author">Made by {{ project.author_name }}</p>
               <div class="project-card-actions">
                 <button class="upvote-btn" type="button">Upvote</button>

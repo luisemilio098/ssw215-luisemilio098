@@ -4,8 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const projectsGrid = document.querySelector('.projects-grid');
   const newProjectForm = document.getElementById('new-project-form');
   const newTitleInput = document.getElementById('new-title');
+  const smartCreateForm = document.getElementById('smart-create-form');
+  const smartNotesInput = document.getElementById('smart-notes');
+  const smartCreateStatus = document.getElementById('smart-create-status');
 
-  if (!filterInput || !projectCount || !projectsGrid || !newProjectForm || !newTitleInput) {
+  if (
+    !filterInput || !projectCount || !projectsGrid || !newProjectForm || !newTitleInput
+    || !smartCreateForm || !smartNotesInput || !smartCreateStatus
+  ) {
     return;
   }
 
@@ -61,6 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
     description.className = 'project-card-description';
     description.textContent = project.description;
 
+    if (project.technologies) {
+      const technologies = document.createElement('p');
+      technologies.className = 'project-technologies';
+      technologies.textContent = `Technologies: ${project.technologies}`;
+      card.append(heading, description, technologies);
+    } else {
+      card.append(heading, description);
+    }
+
     const author = document.createElement('p');
     author.className = 'project-author';
     author.textContent = `Made by ${project.author_name}`;
@@ -76,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     likeCount.textContent = project.likes;
     actions.append(upvoteButton, likeCount);
 
-    card.append(heading, description, author, actions);
+    card.append(author, actions);
     addTrendingBadge(card, project.likes);
     return card;
   };
@@ -144,6 +159,36 @@ document.addEventListener('DOMContentLoaded', () => {
       updateProjectList();
     } catch (error) {
       console.error(error);
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  smartCreateForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const submitButton = smartCreateForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    smartCreateStatus.textContent = '';
+
+    try {
+      const response = await fetch('/api/projects/smart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: smartNotesInput.value }),
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.error || `Smart create failed with status ${response.status}`);
+      }
+      const project = await response.json();
+      projectsGrid.append(createProjectCard(project));
+      smartCreateForm.reset();
+      smartCreateStatus.textContent = 'Project created.';
+      updateProjectList();
+    } catch (error) {
+      console.error(error);
+      smartCreateStatus.textContent = error.message;
     } finally {
       submitButton.disabled = false;
     }
