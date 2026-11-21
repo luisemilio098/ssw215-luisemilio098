@@ -14,6 +14,7 @@ from ai_service import (
     finish_github_session,
     get_github_draft,
     refine_github_session,
+    refine_github_session_blind,
     start_github_session,
 )
 from github_service import (
@@ -254,6 +255,28 @@ def refine_github_import():
 
     try:
         draft = refine_github_session(session_id, feedback.strip())
+    except SessionNotFoundError:
+        return jsonify({"error": "GitHub import session not found"}), 404
+    except ModelRefusalError:
+        return jsonify({"error": "The model refused to refine the project draft"}), 422
+    except ProviderUnavailableError:
+        return jsonify({"error": "The AI provider is unavailable"}), 503
+
+    return jsonify({"draft": draft}), 200
+
+
+@app.post("/api/projects/git-refine-blind")
+def refine_github_import_blind():
+    data = request.get_json(silent=True)
+    session_id = data.get("session_id") if isinstance(data, dict) else None
+    feedback = data.get("feedback") if isinstance(data, dict) else None
+    if not isinstance(session_id, str) or get_github_draft(session_id) is None:
+        return jsonify({"error": "GitHub import session not found"}), 404
+    if not isinstance(feedback, str) or not feedback.strip():
+        return jsonify({"error": "Feedback is required"}), 400
+
+    try:
+        draft = refine_github_session_blind(session_id, feedback.strip())
     except SessionNotFoundError:
         return jsonify({"error": "GitHub import session not found"}), 404
     except ModelRefusalError:

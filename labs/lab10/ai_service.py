@@ -222,5 +222,48 @@ def refine_github_session(
     return _draft_to_dict(updated_draft)
 
 
+def refine_github_session_blind(
+    session_id: str,
+    feedback: str,
+) -> GitHubDraftData:
+    if github_sessions.get(session_id) is None:
+        raise SessionNotFoundError("GitHub import session not found")
+
+    if not API_KEY:
+        raise ProviderUnavailableError("OPENAI_API_KEY is not configured")
+
+    try:
+        response = client.beta.chat.completions.parse(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Refine a portfolio project draft using the user's feedback. "
+                        "Return a short title, a one- or two-sentence summary, relevant "
+                        "technologies, and a difficulty of exactly Beginner, Intermediate, "
+                        "or Advanced."
+                    ),
+                },
+                {"role": "user", "content": feedback},
+            ],
+            response_format=GitHubDraft,
+            temperature=0.1,
+        )
+    except APIError as error:
+        raise ProviderUnavailableError("The OpenAI API request failed") from error
+
+    if not response.choices:
+        raise ProviderUnavailableError("The OpenAI API returned no choices")
+
+    message = response.choices[0].message
+    if message.refusal:
+        raise ModelRefusalError(message.refusal)
+    if message.parsed is None:
+        raise ProviderUnavailableError("The OpenAI API returned no project draft")
+
+    return _draft_to_dict(message.parsed)
+
+
 def finish_github_session(session_id: str) -> None:
     github_sessions.pop(session_id, None)
