@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-README_MAX_CHARS = 12000
+README_MAX_CHARS = 4000
 GITHUB_API_URL = "https://api.github.com"
 
 
